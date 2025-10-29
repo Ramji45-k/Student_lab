@@ -61,3 +61,44 @@ export default function App() {
     </div>
   );
 }
+cd hos
+call npm ci || call npm install
+call npm run build 
+mkdir "C:\ProgramData\Jenkins\.Jenkins\userContent\react-app"
+xcopy /E /I /Y "dist\*" "C:\ProgramData\Jenkins\.Jenkins\userContent\react-app\"
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/akash012345678/MovieTicketBookingSystem.git'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                dir('movie-ticket-booking') {
+                    bat '"C:\\Program Files\\nodejs\\npm.cmd" install'
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('movie-ticket-booking') {
+                    bat '"C:\\Program Files\\nodejs\\npm.cmd" run build'
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "React project built successfully!"
+        }
+        failure {
+            echo "Build failed!"
+        }
+    }
+}
